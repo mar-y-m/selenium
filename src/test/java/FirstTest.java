@@ -13,7 +13,7 @@ public class FirstTest {
 
     @Before
     public void start(){
-        System.setProperty("webdriver.gecko.driver","C:\\Users\\Garuda\\Documents\\selenium\\geckodriver.exe");
+        System.setProperty("webdriver.gecko.driver","C:\\workspace\\geckodriver.exe");
         driver = new FirefoxDriver();
         wait = new WebDriverWait(driver, 10);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
