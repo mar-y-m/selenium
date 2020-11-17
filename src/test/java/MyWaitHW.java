@@ -28,17 +28,13 @@ public class MyWaitHW {
     @Test
     public void waitTest(){
         driver.get("http://localhost:9003/litecart/admin/");
-
-        System.out.println(driver.getTitle());
-        String text = "My Store";
-        wait.until(titleIs(text));
-
+//        System.out.println(driver.getTitle());
+//        String text = "My Store";
+//        wait.until(titleIs(text));
         login("admin", "admin");
-
-        String text1 = "Dashboard | My Store";
-        wait.until(titleIs(text1));
-        System.out.println(driver.getTitle());
-
+//        String text1 = "Dashboard | My Store";
+//        wait.until(titleIs(text1));
+//        System.out.println(driver.getTitle());
         int numberOfAppLinks = getNumberOfElementsFound(By.xpath("//ul[@id='box-apps-menu']//li[contains(@class,'app')]/a"));
 
         for (int ind = 0; ind < numberOfAppLinks; ind++) {
@@ -47,8 +43,8 @@ public class MyWaitHW {
             System.out.println(currentLinkText);
             currentLink.click();
 
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='panel-heading']")));
             WebElement currentHeader = driver.findElement(By.xpath("//div[@class='panel-heading']"));
-            wait.until(ExpectedConditions.visibilityOf(currentHeader));
             System.out.println(currentHeader.getText());
 
             driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
@@ -83,8 +79,8 @@ public class MyWaitHW {
             System.out.println(currentSubPanelText);
             currentSubPanel.click();
 
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='panel-heading']")));
             WebElement currentHeader = driver.findElement(By.xpath("//div[@class='panel-heading']"));
-            wait.until(ExpectedConditions.visibilityOf(currentHeader));
             System.out.println(currentHeader.getText());
         }
     }
