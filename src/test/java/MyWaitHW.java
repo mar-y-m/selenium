@@ -1,17 +1,10 @@
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.concurrent.TimeUnit;
-
-import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 public class MyWaitHW {
     private WebDriver driver;
@@ -22,38 +15,35 @@ public class MyWaitHW {
         driver = new FirefoxDriver();
         wait = new WebDriverWait(driver, 10);
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
     @Test
     public void waitTest(){
+
+        final By panelHeader = new By.ByXPath("//div[@class='panel-heading']");
+
         driver.get("http://localhost:9003/litecart/admin/");
-//        System.out.println(driver.getTitle());
-//        String text = "My Store";
-//        wait.until(titleIs(text));
+
         login("admin", "admin");
-//        String text1 = "Dashboard | My Store";
-//        wait.until(titleIs(text1));
-//        System.out.println(driver.getTitle());
-        int numberOfAppLinks = getNumberOfElementsFound(By.xpath("//ul[@id='box-apps-menu']//li[contains(@class,'app')]/a"));
+
+        Assert.assertTrue(isElementPresent(pathToPanel("app")));
+        int numberOfAppLinks = getNumberOfElementsFound(pathToPanel("app"));
 
         for (int ind = 0; ind < numberOfAppLinks; ind++) {
-            WebElement currentLink = getElementWithIndex(By.xpath("//ul[@id='box-apps-menu']//li[contains(@class,'app')]/a"), ind);
+            WebElement currentLink = getElementWithIndex(pathToPanel("app"), ind);
             String currentLinkText = currentLink.getText();
             System.out.println(currentLinkText);
             currentLink.click();
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='panel-heading']")));
-            WebElement currentHeader = driver.findElement(By.xpath("//div[@class='panel-heading']"));
+            Assert.assertTrue(isElementPresent(panelHeader));
+            WebElement currentHeader = driver.findElement(panelHeader);
             System.out.println(currentHeader.getText());
 
-            driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-
-            int numberOfDocLinks = getNumberOfElementsFound(By.xpath("//ul[@id='box-apps-menu']//li[contains(@class,'doc')]/a"));
+            int numberOfDocLinks = getNumberOfElementsFound(pathToPanel("doc"));
             System.out.println(numberOfDocLinks);
 
             if(numberOfDocLinks>0){
-                appSubPanels(numberOfDocLinks);
+                appSubPanels(numberOfDocLinks, panelHeader);
             }
         }
     }
@@ -64,6 +54,20 @@ public class MyWaitHW {
         driver.findElement(By.name("login")).submit();
     }
 
+    private boolean isElementPresent(By locator){
+        try {
+            wait.until((WebDriver d) -> d.findElement(locator));
+            return true;
+        }catch (InvalidSelectorException | TimeoutException ex){
+            System.out.println(ex);
+            return false;
+        }
+    }
+
+    private By pathToPanel(String panelType){
+        return new By.ByXPath("//ul[@id='box-apps-menu']//li[contains(@class,'"+panelType+"')]/a");
+    }
+
     private int getNumberOfElementsFound(By by) {
         return driver.findElements(by).size();
     }
@@ -72,15 +76,15 @@ public class MyWaitHW {
         return driver.findElements(by).get(indx);
     }
 
-    private void appSubPanels(int numberOfPanels){
+    private void appSubPanels(int numberOfPanels, By panelHeader){
         for (int i = 0; i < numberOfPanels; i++) {
-            WebElement currentSubPanel = getElementWithIndex(By.xpath("//ul[@id='box-apps-menu']//li[contains(@class,'doc')]/a"), i);
+            WebElement currentSubPanel = getElementWithIndex(pathToPanel("doc"), i);
             String currentSubPanelText = currentSubPanel.getText();
             System.out.println(currentSubPanelText);
             currentSubPanel.click();
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='panel-heading']")));
-            WebElement currentHeader = driver.findElement(By.xpath("//div[@class='panel-heading']"));
+            Assert.assertTrue(isElementPresent(panelHeader));
+            WebElement currentHeader = driver.findElement(panelHeader);
             System.out.println(currentHeader.getText());
         }
     }
