@@ -24,7 +24,7 @@ public class MyWaitHW {
 
         driver.get("http://localhost:9003/litecart/admin/");
 
-        login("admin", "admin");
+        loginAsAdmin();
 
         Assert.assertTrue(isElementPresent(pathToPanel("app")));
         int numberOfAppLinks = getNumberOfElementsFound(pathToPanel("app"));
@@ -48,9 +48,9 @@ public class MyWaitHW {
         }
     }
 
-    private void login(String name, String password){
-        driver.findElement(By.name("username")).sendKeys(name);
-        driver.findElement(By.name("password")).sendKeys(password);
+    private void loginAsAdmin(){
+        driver.findElement(By.name("username")).sendKeys("admin");
+        driver.findElement(By.name("password")).sendKeys("admin");
         driver.findElement(By.name("login")).submit();
     }
 
