@@ -49,6 +49,7 @@ public class MyWaitHW {
             int numberOfDocLinks = getNumberOfElementsFound(pathToPanel(Dictionary.SUBPANEL));
             System.out.println(numberOfDocLinks);
 
+            //проверка, что, если хэдер не совпадает с текстом ссылки, он совпадает с текстом первой сабпанели
             if(!currentPanelLinkText.equals(currentHeaderName)){
                 Assert.assertTrue(numberOfDocLinks>0);
                 String firstSubpanelLinkText = getElementWithIndex(pathToPanel(Dictionary.SUBPANEL), 0).getText();
@@ -106,6 +107,7 @@ public class MyWaitHW {
 
             if(!currentSubPanelText.equals(currentHeaderName)){
 
+            //проверка, что у сеттингов своя атмосфера
             if(currentHeaderName.equals("Settings")){
                 List<WebElement> settingsSubPanels = driver.findElements(By.xpath("//li[@data-code='settings']//li[contains(@class,'doc')]/a"));
                 List<String> subpanelNames = settingsSubPanels.stream()
@@ -115,6 +117,7 @@ public class MyWaitHW {
                 System.out.println("Current Header is correct");
             }
 
+            //проверка, что у одной единственной панели скан файлз дополнительный текст в хэдере
             if(currentSubPanelText.equals("Scan Files")){
                 Assert.assertEquals("Scan Files For Translations", currentHeaderName);
                 System.out.println("Current Header is correct");
