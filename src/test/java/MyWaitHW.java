@@ -6,7 +6,12 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MyWaitHW {
+
     private WebDriver driver;
     private WebDriverWait wait;
 
@@ -26,21 +31,33 @@ public class MyWaitHW {
 
         loginAsAdmin();
 
-        Assert.assertTrue(isElementPresent(pathToPanel("app")));
-        int numberOfAppLinks = getNumberOfElementsFound(pathToPanel("app"));
+        Assert.assertTrue(isElementPresent(pathToPanel(Dictionary.PANEL)));
+        int numberOfAppLinks = getNumberOfElementsFound(pathToPanel(Dictionary.PANEL));
+        System.out.println(numberOfAppLinks);
 
         for (int ind = 0; ind < numberOfAppLinks; ind++) {
-            WebElement currentLink = getElementWithIndex(pathToPanel("app"), ind);
-            String currentLinkText = currentLink.getText();
-            System.out.println(currentLinkText);
+            WebElement currentLink = getElementWithIndex(pathToPanel(Dictionary.PANEL), ind);
+            String currentPanelLinkText = currentLink.getText();
+            System.out.println("Current panel is "+ currentPanelLinkText);
             currentLink.click();
 
             Assert.assertTrue(isElementPresent(panelHeader));
-            WebElement currentHeader = driver.findElement(panelHeader);
-            System.out.println(currentHeader.getText());
+            String currentHeaderName = driver.findElement(panelHeader).getText();
 
-            int numberOfDocLinks = getNumberOfElementsFound(pathToPanel("doc"));
+            System.out.println("Current header is " + currentHeaderName);
+
+            int numberOfDocLinks = getNumberOfElementsFound(pathToPanel(Dictionary.SUBPANEL));
             System.out.println(numberOfDocLinks);
+
+            if(!currentPanelLinkText.equals(currentHeaderName)){
+                Assert.assertTrue(numberOfDocLinks>0);
+                String firstSubpanelLinkText = getElementWithIndex(pathToPanel(Dictionary.SUBPANEL), 0).getText();
+                System.out.println("First subpanel link text is "+firstSubpanelLinkText);
+                Assert.assertEquals(firstSubpanelLinkText, currentHeaderName);
+                System.out.println("Current Header is correct");
+            }
+            else{
+                System.out.println("Current Header is correct");}
 
             if(numberOfDocLinks>0){
                 appSubPanels(numberOfDocLinks, panelHeader);
@@ -56,7 +73,7 @@ public class MyWaitHW {
 
     private boolean isElementPresent(By locator){
         try {
-            wait.until((WebDriver d) -> d.findElement(locator));
+            wait.until(d -> d.findElement(locator));
             return true;
         }catch (InvalidSelectorException | TimeoutException ex){
             System.out.println(ex);
@@ -64,8 +81,8 @@ public class MyWaitHW {
         }
     }
 
-    private By pathToPanel(String panelType){
-        return new By.ByXPath("//ul[@id='box-apps-menu']//li[contains(@class,'"+panelType+"')]/a");
+    private By pathToPanel(Dictionary panelType){
+        return new By.ByXPath("//ul[@id='box-apps-menu']//li[contains(@class,'"+panelType.getType()+"')]/a");
     }
 
     private int getNumberOfElementsFound(By by) {
@@ -78,14 +95,57 @@ public class MyWaitHW {
 
     private void appSubPanels(int numberOfPanels, By panelHeader){
         for (int i = 0; i < numberOfPanels; i++) {
-            WebElement currentSubPanel = getElementWithIndex(pathToPanel("doc"), i);
+            WebElement currentSubPanel = getElementWithIndex(pathToPanel(Dictionary.SUBPANEL), i);
             String currentSubPanelText = currentSubPanel.getText();
-            System.out.println(currentSubPanelText);
+            System.out.println("Current subpanel is "+currentSubPanelText);
             currentSubPanel.click();
 
             Assert.assertTrue(isElementPresent(panelHeader));
-            WebElement currentHeader = driver.findElement(panelHeader);
-            System.out.println(currentHeader.getText());
+            String currentHeaderName = driver.findElement(panelHeader).getText();
+            System.out.println("Current header is " + currentHeaderName);
+
+            if(!currentSubPanelText.equals(currentHeaderName)){
+
+            if(currentHeaderName.equals("Settings")){
+                List<WebElement> settingsSubPanels = driver.findElements(By.xpath("//li[@data-code='settings']//li[contains(@class,'doc')]/a"));
+                List<String> subpanelNames = settingsSubPanels.stream()
+                        .map(WebElement::getText)
+                        .collect(Collectors.toList());
+                Assert.assertTrue(subpanelNames.stream().anyMatch(s -> s.equals(currentSubPanelText)));
+                System.out.println("Current Header is correct");
+            }
+
+            if(currentSubPanelText.equals("Scan Files")){
+                Assert.assertEquals("Scan Files For Translations", currentHeaderName);
+                System.out.println("Current Header is correct");
+            }
+            }
+            else{
+                Assert.assertEquals(currentSubPanelText,currentHeaderName);
+                System.out.println("Current Header is correct");
+            }
+        }
+    }
+
+    public enum Dictionary{
+        PANEL("app"),
+        SUBPANEL("doc");
+
+        private final String type;
+
+        Dictionary(String type) {
+            this.type = type;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public static Dictionary fromString(String s){
+            return Arrays.stream(Dictionary.values())
+                    .filter(e -> e.getType().equals(s))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown dictionary value "+ s));
         }
     }
 

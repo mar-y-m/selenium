@@ -1,7 +1,9 @@
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -11,6 +13,9 @@ public class CianTest {
 
     public WebDriver driver;
     public WebDriverWait wait;
+
+    @FindBy(xpath = "//button[contains(text(), 'Neuer Auftrag')]")
+    private WebElement button_newOrder;
 
     @Before
     public void start(){
@@ -27,6 +32,7 @@ public class CianTest {
 
     @Test
     public void test(){
+
         driver.get("https://voronezh.cian.ru/");
         //1. выбрать правильную линку тип объявления
 
@@ -43,9 +49,20 @@ public class CianTest {
         setCity("Воронеж");
 
         //6. нажать поиск
+        driver.findElement(ByXPath.xpath("//div[@data-name='FiltersBlock']//a[@data-mark='FiltersSearchButton']")).click();
         //7. выбрать результаты с первой страницы из дива оффер
         //7,5. сохранить результаты в эксельку
 
+    }
+
+    private boolean isElementPresent(By locator){
+        try {
+            wait.until((WebDriver d) -> d.findElement(locator));
+            return true;
+        }catch (InvalidSelectorException | TimeoutException ex){
+            System.out.println(ex);
+            return false;
+        }
     }
 
     private void setOfferType(String requiredType) {
@@ -62,9 +79,8 @@ public class CianTest {
     }
 
     private void setPriceRange(String from, String to){
-        WebElement priceFilterButton = driver.findElement(xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']/button"));
-        priceFilterButton.click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']/div[contains(@class,'dropdown')]")));
+        driver.findElement(xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']/button")).click();
+        Assert.assertTrue(isElementPresent(xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']/div[contains(@class,'dropdown')]")));
         driver.findElement(By.xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']//input[@placeholder='от']")).sendKeys(from);
         driver.findElement(By.xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']//input[@placeholder='до']")).sendKeys(to);
     }
@@ -72,8 +88,8 @@ public class CianTest {
     private void setCity(String city){
         WebElement cityInputField = driver.findElement(By.xpath("//div[@data-name='Filters']//div[@data-mark='FilterGeo']//input"));
         cityInputField.sendKeys(city);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@data-name='SuggestionPopup']")));
-        //driver.findElements(ByLinkText.linkText(city)).get(0).click();
+        Assert.assertTrue(isElementPresent(xpath("//div[@data-name='SuggestionPopup']")));
+        driver.findElements(xpath("//div[@data-name='SuggestionPopup']//span[@title='Воронеж']")).get(0).click();
     }
 
 }
