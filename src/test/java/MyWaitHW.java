@@ -35,10 +35,10 @@ public class MyWaitHW {
         loginAsAdmin();
 
         Assert.assertTrue(isElementPresent(panelLocator));
-        int numberOfAppLinks = getNumberOfElementsFound(panelLocator);
-        System.out.println(numberOfAppLinks);
+        int numberOfPanelLinks = getNumberOfElementsFound(panelLocator);
+        System.out.println(numberOfPanelLinks);
 
-        for (int ind = 0; ind < numberOfAppLinks; ind++) {
+        for (int ind = 0; ind < numberOfPanelLinks; ind++) {
             WebElement currentLink = getElementWithIndex(panelLocator, ind);
             String currentPanelLinkText = currentLink.getText();
             System.out.println("Current panel is " + currentPanelLinkText);
@@ -49,12 +49,12 @@ public class MyWaitHW {
 
             System.out.println("Current header is " + currentHeaderName);
 
-            int numberOfDocLinks = getNumberOfElementsFound(subpanelLocator);
-            System.out.println(numberOfDocLinks);
+            int numberOfSubpanelLinks = getNumberOfElementsFound(subpanelLocator);
+            System.out.println(numberOfSubpanelLinks);
 
             //проверка, что, если хэдер не совпадает с текстом ссылки, он совпадает с текстом первой сабпанели
             if (!currentPanelLinkText.equals(currentHeaderName)) {
-                Assert.assertTrue(numberOfDocLinks > 0);
+                Assert.assertTrue(numberOfSubpanelLinks > 0);
                 String firstSubpanelLinkText = getElementWithIndex(subpanelLocator, 0).getText();
                 System.out.println("First subpanel link text is " + firstSubpanelLinkText);
                 Assert.assertEquals(firstSubpanelLinkText, currentHeaderName);
@@ -63,8 +63,8 @@ public class MyWaitHW {
                 System.out.println("Current Header is correct");
             }
 
-            if (numberOfDocLinks > 0) {
-                checkSubPanels(numberOfDocLinks, panelHeader);
+            if (numberOfSubpanelLinks > 0) {
+                checkSubPanels(numberOfSubpanelLinks, panelHeader);
             }
         }
     }
