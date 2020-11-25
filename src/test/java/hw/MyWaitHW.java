@@ -1,3 +1,5 @@
+package hw;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,12 +51,12 @@ public class MyWaitHW {
 
             System.out.println("Current header is " + currentHeaderName);
 
-            int numberOfSubpanelLinks = getNumberOfElementsFound(subpanelLocator);
-            System.out.println(numberOfSubpanelLinks);
+            int numberOfDocLinks = getNumberOfElementsFound(subpanelLocator);
+            System.out.println(numberOfDocLinks);
 
             //проверка, что, если хэдер не совпадает с текстом ссылки, он совпадает с текстом первой сабпанели
             if (!currentPanelLinkText.equals(currentHeaderName)) {
-                Assert.assertTrue(numberOfSubpanelLinks > 0);
+                Assert.assertTrue(numberOfDocLinks > 0);
                 String firstSubpanelLinkText = getElementWithIndex(subpanelLocator, 0).getText();
                 System.out.println("First subpanel link text is " + firstSubpanelLinkText);
                 Assert.assertEquals(firstSubpanelLinkText, currentHeaderName);
@@ -63,8 +65,8 @@ public class MyWaitHW {
                 System.out.println("Current Header is correct");
             }
 
-            if (numberOfSubpanelLinks > 0) {
-                checkSubPanels(numberOfSubpanelLinks, panelHeader);
+            if (numberOfDocLinks > 0) {
+                checkSubPanels(numberOfDocLinks, panelHeader);
             }
         }
     }
