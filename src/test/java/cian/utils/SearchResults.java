@@ -1,4 +1,4 @@
-package utils;
+package cian.utils;
 
 public class SearchResults {
     public  String title;

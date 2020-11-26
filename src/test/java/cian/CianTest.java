@@ -5,9 +5,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import utils.ExcelUtils;
-import utils.FilterInputValues;
-import utils.SearchResults;
+import cian.utils.ExcelUtils;
+import cian.utils.FilterInputValues;
+import cian.utils.SearchResults;
 
 import java.util.ArrayList;
 import java.util.List;
