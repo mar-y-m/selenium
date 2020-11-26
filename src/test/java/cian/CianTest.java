@@ -31,17 +31,18 @@ public class CianTest extends TestBase {
         selectPriceRange(FilterInputValues.getPriceFrom(), FilterInputValues.getPriceTo());
         selectCity(FilterInputValues.getCity());
 
-        driver.findElement(ByXPath.xpath("//div[@data-name='FiltersBlock']//a[@data-mark='FiltersSearchButton']")).click();
+        driver.findElement(StartPage.searchButtonLocator).click();
 
-        String pathToFile = "C:\\Users\\mminaeva\\IdeaProjects\\selenium\\src\\test\\resources\\Results1.xlsx";
         List<SearchResults> resultsList = getOffersInfo();
+        String pathToFile = "C:\\Users\\mminaeva\\IdeaProjects\\selenium\\src\\test\\resources\\Results1.xlsx";
 
         excel.writeExcel(resultsList, pathToFile);
     }
 
 
     private void selectFilterTab(String requiredType) {
-        WebElement activeTypeFilterLink = driver.findElement(xpath("//ul[@data-name='FiltersTabs']/li[contains(@class,'active')]/a"));
+        System.out.println(requiredType);
+        WebElement activeTypeFilterLink = driver.findElement(StartPage.activeTypeFilterLinkLocator);
         String activeLinkName = activeTypeFilterLink.getText();
         if (!activeLinkName.equals(requiredType)) {
             WebElement correctType = driver.findElement(By.ByLinkText.linkText(requiredType));
@@ -50,16 +51,16 @@ public class CianTest extends TestBase {
     }
 
     private void selectOfferType(List<String> requireOfferTypeList) {
-        WebElement offerTypeFilterButton = driver.findElement(By.xpath("//button[@class='_025a50318d--button--2oXjq']"));
+        System.out.println(requireOfferTypeList);
+        WebElement offerTypeFilterButton = driver.findElement(StartPage.offerTypeFilterButtonLocator);
         offerTypeFilterButton.click();
 
-        By pathToOfferTypeDropdown = By.xpath("//div[@class='_025a50318d--dropdown--3wfz1']");
-        Assert.assertTrue(isElementPresent(pathToOfferTypeDropdown));
+        Assert.assertTrue(isElementPresent(StartPage.offerTypeDropdownLocator));
 
-        int offerTypeOptionsCount = driver.findElements(By.xpath("//ul[@class='_025a50318d--list-inner--3S0Cv']/li")).size();
+        int offerTypeOptionsCount = driver.findElements(StartPage.offerTypeOptionsLocator).size();
         System.out.println(offerTypeOptionsCount);
         for (int i = 0; i < offerTypeOptionsCount; i++) {
-            WebElement currentOfferTypeCheckboxLabel = driver.findElements(By.xpath("//ul[@class='_025a50318d--list-inner--3S0Cv']/li//span[@class='_025a50318d--label--2B10u']")).get(i);
+            WebElement currentOfferTypeCheckboxLabel = driver.findElements(StartPage.offerTypeCheckboxLabelLocator).get(i);
             String currentOfferTypeCheckboxLabelText = currentOfferTypeCheckboxLabel.getText();
             System.out.println(currentOfferTypeCheckboxLabelText);
 
@@ -84,15 +85,15 @@ public class CianTest extends TestBase {
     }
 
     private void selectRoomsCount(List<String> listOfRoomsCountValues) {
-        WebElement roomsCountFilterButton = driver.findElement(By.xpath("//button[@title='1, 2 комн.']"));
+        System.out.println(listOfRoomsCountValues);
+        WebElement roomsCountFilterButton = driver.findElement(StartPage.roomsCountFilterButtonLocator);
         roomsCountFilterButton.click();
 
-        By pathToRoomsCountDropdown = By.xpath("//div[@class='_025a50318d--dropdown--11qNB']");
-        Assert.assertTrue(isElementPresent(pathToRoomsCountDropdown));
+        Assert.assertTrue(isElementPresent(StartPage.roomsCountDropdownLocator));
 
-        int roomsCountButtonsNumber = driver.findElements(By.xpath("//ul[@class='_025a50318d--list--3ybsu']/li")).size();
+        int roomsCountButtonsNumber = driver.findElements(StartPage.roomsCountButtonsLocator).size();
         for (int i = 0; i < roomsCountButtonsNumber; i++) {
-            WebElement currentButton = driver.findElements(By.xpath("//ul[@class='_025a50318d--list--3ybsu']/li/button")).get(i);
+            WebElement currentButton = driver.findElements(StartPage.roomsCountButtonLocator).get(i);
 
             if (listOfRoomsCountValues.contains(currentButton.getText())) {
 
@@ -117,40 +118,42 @@ public class CianTest extends TestBase {
     }
 
     private void selectPriceRange(String from, String to) {
-        driver.findElement(xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']/button")).click();
-        Assert.assertTrue(isElementPresent(xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']/div[contains(@class,'dropdown')]")));
-        driver.findElement(By.xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']//input[@placeholder='от']")).sendKeys(from);
-        driver.findElement(By.xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']//input[@placeholder='до']")).sendKeys(to);
+        System.out.println(from+to);
+        driver.findElement(StartPage.priceFilterButtonLocator).click();
+        Assert.assertTrue(isElementPresent(StartPage.priceFilterDropdownLocator));
+        driver.findElement(StartPage.priceFilterFromLocator).sendKeys(from);
+        driver.findElement(StartPage.priceFilterToLocator).sendKeys(to);
     }
 
     private void selectCity(String city) {
-        WebElement cityInputField = driver.findElement(By.xpath("//div[@data-name='Filters']//div[@data-mark='FilterGeo']//input"));
+        System.out.println(city);
+        WebElement cityInputField = driver.findElement(StartPage.cityInputFieldLocator);
         cityInputField.click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(xpath("//div[@data-name='Filters']//div[@data-mark='FilterPrice']/div[contains(@class,'dropdown')]")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(StartPage.priceFilterDropdownLocator));
         cityInputField.sendKeys(city);
-        Assert.assertTrue(isElementPresent(xpath("//div[@data-name='SuggestionPopup']")));
-        driver.findElements(xpath("//div[@data-name='SuggestionPopup']//span[@title='Воронеж']")).get(0).click();
+        Assert.assertTrue(isElementPresent(StartPage.citySuggestionPopupLocator));
+        driver.findElements(xpath("//div[@data-name='SuggestionPopup']//span[@title='"+city+"']")).get(0).click();
     }
 
     private List<SearchResults> getOffersInfo() {
-        Assert.assertTrue(isElementPresent(By.xpath("//div[@data-name='Offers']")));
+        Assert.assertTrue(isElementPresent(StartPage.offersLocator));
 
         List<SearchResults> searchResultsList = new ArrayList<>();
 
-        int numberOfCards = driver.findElements(By.xpath("//div[@data-name='Offers']/article")).size();
+        int numberOfCards = driver.findElements(StartPage.offerCardsLocator).size();
 
         if (numberOfCards > 0) {
             for (int i = 0; i < numberOfCards; i++) {
-                WebElement currentCardTitle = driver.findElements(By.xpath("//div[@data-name='Offers']//div[@data-name='TitleComponent']")).get(i);
+                WebElement currentCardTitle = driver.findElements(StartPage.offerCardTitleLocator).get(i);
                 String currentCardTitleText = currentCardTitle.getText();
 
-                WebElement currentCardPrice = driver.findElements(By.xpath("//div[@data-name='Offers']//span[@data-mark='MainPrice']")).get(i);
+                WebElement currentCardPrice = driver.findElements(StartPage.offerCardMainPriceLocator).get(i);
                 String currentCardPriceText = currentCardPrice.getText();
 
-                WebElement currentCardAddress = driver.findElements(By.xpath("//div[@data-name='Offers']//div[contains(@class,'_93444fe79c--labels--1J6M3')]")).get(i);
+                WebElement currentCardAddress = driver.findElements(StartPage.offerCardAddressLocator).get(i);
                 String currentCardAddressText = currentCardAddress.getText();
 
-                WebElement currentCardInfo = driver.findElements(By.xpath("//div[@data-name='Offers']//div[contains(@class,'description')]/p")).get(i);
+                WebElement currentCardInfo = driver.findElements(StartPage.offerCardInfoLocator).get(i);
                 String currentCardInfoText = currentCardInfo.getText();
 
                 SearchResults searchResultsIndx = new SearchResults(currentCardTitleText, currentCardPriceText, currentCardAddressText, currentCardInfoText);
