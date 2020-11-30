@@ -1,5 +1,6 @@
 package hw;
 
+import cian.TestBase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,7 +88,7 @@ public class MyWaitHW {
         }
     }
 
-    private By pathToPanel(Dictionary panelType) {
+    public By pathToPanel(Dictionary panelType) {
         return new By.ByXPath("//ul[@id='box-apps-menu']//li[contains(@class,'" + panelType.getHtmlClass() + "')]/a");
     }
 

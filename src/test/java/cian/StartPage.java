@@ -1,10 +1,16 @@
 package cian;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.FindBy;
 
 import static org.openqa.selenium.By.xpath;
 
 public class StartPage extends TestBase {
+
+    @FindBy (xpath="//ul[@data-name='FiltersTabs']/li[contains(@class,'active')]/a")
+        public static WebElement activeFilter;
+    @FindBy (xpath="//*[@id=\"_025a50318d--mainpage--3vyA6\"]/div/div[1]/div[2]/div[1]/div[1]/div[1]/div/div[3]/span/span[2]/a")
+    public static WebElement searchButton;
 
     public static final By activeTypeFilterLinkLocator = xpath("//ul[@data-name='FiltersTabs']/li[contains(@class,'active')]/a");
 

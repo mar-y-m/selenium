@@ -52,6 +52,8 @@ public class TestBase {
         return driver.findElements(locator).size() > 0;
     }
 
+
+
     @After
     public void Stop() {
         driver.quit();
