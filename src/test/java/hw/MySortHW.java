@@ -80,7 +80,7 @@ public class MySortHW extends TestBase {
             if (currentZoneCount > 0) {
                 WebElement countryWithZones = driver.findElements(countryLinkLocator).get(i);
                 countriesWithZones.add(countryWithZones);
-                System.out.println(countryWithZones.getText() + currentZoneCount);
+                System.out.println(countryWithZones.getText() + " has " + currentZoneCount + " zones");
             }
         }
         return getTextList(countriesWithZones);
