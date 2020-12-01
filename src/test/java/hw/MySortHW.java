@@ -36,7 +36,7 @@ public class MySortHW extends TestBase {
         checkAlphabeticalOrder(countriesNamesList);
 
         Assert.assertTrue(isElementPresent(countryZonesLocator));
-        List<String> countriesWithZones = findCountiesWithZones(countryZonesLocator, countryNameLinksLocator);
+        List<String> countriesWithZones = findCountriesWithZones(countryZonesLocator, countryNameLinksLocator);
 
         if (!countriesWithZones.isEmpty()) {
             checkCountryZonesOrder(countryNameLinksLocator, zonesHeaderLocator, zonesNamesLocator, countriesWithZones);
@@ -70,7 +70,7 @@ public class MySortHW extends TestBase {
         }
     }
 
-    private List<String> findCountiesWithZones(By zoneCountLocator, By countryLinkLocator) {
+    private List<String> findCountriesWithZones(By zoneCountLocator, By countryLinkLocator) {
         List<WebElement> countriesWithZones = new ArrayList<>();
 
         int countries = driver.findElements(zoneCountLocator).size();
