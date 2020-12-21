@@ -4,12 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.concurrent.TimeUnit;
-
-import static org.openqa.selenium.By.xpath;
 
 
 public class TestBase {
@@ -24,9 +21,6 @@ public class TestBase {
         wait = new WebDriverWait(driver, 10);
         driver.manage().window().maximize();
     }
-
-
-    //WebElement activeTypeFilterLink = driver.findElement(xpath("//ul[@data-name='FiltersTabs']/li[contains(@class,'active')]/a"));
 
 
     boolean areElementsPresent(By locator, int time) {
@@ -52,6 +46,44 @@ public class TestBase {
         return driver.findElements(locator).size() > 0;
     }
 
+    public void waitForPageToLoad() {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        int timeWaitedInMilliseconds = 0;
+        int maxWaitTimeInMilliseconds = 2000;
+
+        while (timeWaitedInMilliseconds < maxWaitTimeInMilliseconds) {
+            if (js.executeScript("return document.readyState").equals("interactive")) {
+                System.out.println("Waited interactive: " + timeWaitedInMilliseconds);
+                break;
+            }
+            waitElementsReload(100);
+            timeWaitedInMilliseconds += 100;
+        }
+
+        timeWaitedInMilliseconds = 0;
+        while (!js.executeScript("return document.readyState").equals("complete")) {
+            //System.out.println("waiting !!!!");
+            waitElementsReload(500);
+            timeWaitedInMilliseconds += 500;
+            if (timeWaitedInMilliseconds == 10000) {
+                break;
+            }
+        }
+    }
+
+
+    /**
+     * thread sleep
+     *
+     * @param ms time in milliseconds
+     */
+    protected void waitElementsReload(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("error"+ e);
+        }
+    }
 
 
     @After
