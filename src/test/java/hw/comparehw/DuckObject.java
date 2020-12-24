@@ -81,11 +81,11 @@ public class DuckObject {
                 ", oldPrice='" + oldPrice + '\'' +
                 ", oldPriceColor='" + oldPriceColor + '\'' +
                 ", oldPriceSize=" + oldPriceSize +
-                ", isOldPriceTextBold='" + isOldPriceTextLineThrough + '\'' +
+                ", isOldPriceTextLineThrough='" + isOldPriceTextLineThrough + '\'' +
                 ", newPrice='" + newPrice + '\'' +
                 ", newPriceColor='" + newPriceColor + '\'' +
                 ", newPriceSize=" + newPriceSize +
-                ", isNewPriceTextLineThrough='" + isNewPriceTextBold + '\'' +
+                ", isNewPriceTextBold='" + isNewPriceTextBold + '\'' +
                 '}';
     }
 
